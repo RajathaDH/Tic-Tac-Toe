@@ -1,7 +1,7 @@
 import random
 import pygame
 
-board = ['O' for x in range(9)]
+board = [' ' for x in range(9)]
 
 WIDTH, HEIGHT = 340, 340
 WHITE = (255, 255, 255)
@@ -40,6 +40,8 @@ def main():
 
     game_end = False
 
+    player_move = True
+
     while run:
         clock.tick(FPS)
 
@@ -49,10 +51,36 @@ def main():
             if event.type == pygame.QUIT:
                 run = False
             elif event.type == pygame.MOUSEBUTTONUP:
-                clicked_position = event.pos
-                player_turn(clicked_position)
+                if player_move:
+                    clicked_position = event.pos
+                    player_turn(clicked_position)
+                    player_move = False
 
-        draw()
+        if not game_end:
+            draw()
+            if check_winner(board):
+                WIN.fill((255, 255, 255))
+                text = font.render('WIN', 1, (0, 0, 0))
+                WIN.blit(text, (10, 10))
+                game_end = True
+
+            if not player_move and not game_end:
+                computer_move = computer_turn()
+                board[computer_move] = 'O'
+                player_move = True
+                if check_winner(board):
+                    WIN.fill((255, 255, 255))
+                    text = font.render('LOSE', 1, (0, 0, 0))
+                    WIN.blit(text, (10, 10))
+                    game_end = True
+
+        if board.count(' ') < 1:
+            WIN.fill((255, 255, 255))
+            text = font.render('Tie Game', 1, (0, 0, 0))
+            WIN.blit(text, (10, 10))
+            game_end = True
+
+        pygame.display.update()
 
     pygame.quit()
 
@@ -69,7 +97,7 @@ def draw():
         text = font.render(letter, 1, colour)
         WIN.blit(text, (square_positions[position][0] + 25, square_positions[position][1] + 20))
     
-    pygame.display.update()
+    #pygame.display.update()
 
 def player_turn(position):
     x = position[0]
