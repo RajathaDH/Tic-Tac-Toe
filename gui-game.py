@@ -1,7 +1,7 @@
 import random
 import pygame
 
-board = [' ' for x in range(9)]
+board = ['O' for x in range(9)]
 
 WIDTH, HEIGHT = 340, 340
 WHITE = (255, 255, 255)
@@ -29,16 +29,6 @@ square_positions = [
     (230, 230)
 ]
 
-square1 = pygame.draw.rect(WIN, WHITE, (square_positions[0][0], square_positions[0][1], square_size[0], square_size[1]))
-square2 = pygame.draw.rect(WIN, WHITE, (square_positions[1][0], square_positions[1][1], square_size[0], square_size[1]))
-square3 = pygame.draw.rect(WIN, WHITE, (square_positions[2][0], square_positions[2][1], square_size[0], square_size[1]))
-square4 = pygame.draw.rect(WIN, WHITE, (square_positions[3][0], square_positions[3][1], square_size[0], square_size[1]))
-square5 = pygame.draw.rect(WIN, WHITE, (square_positions[4][0], square_positions[4][1], square_size[0], square_size[1]))
-square6 = pygame.draw.rect(WIN, WHITE, (square_positions[5][0], square_positions[5][1], square_size[0], square_size[1]))
-square7 = pygame.draw.rect(WIN, WHITE, (square_positions[6][0], square_positions[6][1], square_size[0], square_size[1]))
-square8 = pygame.draw.rect(WIN, WHITE, (square_positions[7][0], square_positions[7][1], square_size[0], square_size[1]))
-square9 = pygame.draw.rect(WIN, WHITE, (square_positions[8][0], square_positions[8][1], square_size[0], square_size[1]))
-
 #text = font.render('X', 1, (0, 0, 0))
 #WIN.blit(text, (10, 10))
 
@@ -48,6 +38,8 @@ def main():
 
     run = True
 
+    game_end = False
+
     while run:
         clock.tick(FPS)
 
@@ -56,27 +48,39 @@ def main():
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 run = False
-
-            if event.type == pygame.MOUSEBUTTONUP:
-                pos = pygame.mouse.get_pos()
-                
-                if square1.collidepoint(pos):
-                    board[0] = 'X'
+            elif event.type == pygame.MOUSEBUTTONUP:
+                clicked_position = event.pos
+                player_turn(clicked_position)
 
         draw()
-
-        #pygame.display.update()
 
     pygame.quit()
 
 def draw():
-    #WIN.fill((0, 0, 0))
+    WIN.fill((0, 0, 0))
+
+    # draw squares
+    for position in square_positions:
+        pygame.draw.rect(WIN, WHITE, (position[0], position[1], square_size[0], square_size[1]))
+    
+    # draw letters
     for position, letter in enumerate(board):
-        text = font.render(letter, 1, (0, 0, 0))
+        colour = (0, 0, 0) if letter == 'X' else (255, 0, 0)
+        text = font.render(letter, 1, colour)
         WIN.blit(text, (square_positions[position][0] + 25, square_positions[position][1] + 20))
+    
     pygame.display.update()
 
-"""def check_winner(board):
+def player_turn(position):
+    x = position[0]
+    y = position[1]
+
+    for index, square_position in enumerate(square_positions):
+        if x >= square_position[0] and x <= (square_position[0] + square_size[0]) and y >= square_position[1] and y <= (square_position[1] + square_size[1]):
+            board[index] = 'X'
+            break
+
+def check_winner(board):
     # rows
     if ((board[0] == board[1] == board[2] != ' ') or
         (board[3] == board[4] == board[5] != ' ') or
@@ -142,7 +146,78 @@ def computer_turn():
         return move
 
     # return initial move value
-    return move"""
+    return move
 
 if __name__ == '__main__':
     main()
+
+"""
+while run:
+    clock.tick(FPS)
+
+    #pygame.time.delay(100)
+
+    for event in pygame.event.get():
+        if event.type == pygame.QUIT:
+            run = False
+
+        if not game_end:
+            WIN.fill((0, 0, 0))
+
+            square1 = pygame.draw.rect(WIN, WHITE, (square_positions[0][0], square_positions[0][1], square_size[0], square_size[1]))
+            square2 = pygame.draw.rect(WIN, WHITE, (square_positions[1][0], square_positions[1][1], square_size[0], square_size[1]))
+            square3 = pygame.draw.rect(WIN, WHITE, (square_positions[2][0], square_positions[2][1], square_size[0], square_size[1]))
+            square4 = pygame.draw.rect(WIN, WHITE, (square_positions[3][0], square_positions[3][1], square_size[0], square_size[1]))
+            square5 = pygame.draw.rect(WIN, WHITE, (square_positions[4][0], square_positions[4][1], square_size[0], square_size[1]))
+            square6 = pygame.draw.rect(WIN, WHITE, (square_positions[5][0], square_positions[5][1], square_size[0], square_size[1]))
+            square7 = pygame.draw.rect(WIN, WHITE, (square_positions[6][0], square_positions[6][1], square_size[0], square_size[1]))
+            square8 = pygame.draw.rect(WIN, WHITE, (square_positions[7][0], square_positions[7][1], square_size[0], square_size[1]))
+            square9 = pygame.draw.rect(WIN, WHITE, (square_positions[8][0], square_positions[8][1], square_size[0], square_size[1]))
+
+            draw()
+            pygame.display.update()
+
+            if event.type == pygame.MOUSEBUTTONUP:
+                pos = pygame.mouse.get_pos()
+                
+                if square1.collidepoint(pos):
+                    board[0] = 'X'
+                elif square2.collidepoint(pos):
+                    board[1] = 'X'
+                elif square3.collidepoint(pos):
+                    board[2] = 'X'
+                elif square4.collidepoint(pos):
+                    board[3] = 'X'
+                elif square5.collidepoint(pos):
+                    board[4] = 'X'
+                elif square6.collidepoint(pos):
+                    board[5] = 'X'
+                elif square7.collidepoint(pos):
+                    board[6] = 'X'
+                elif square8.collidepoint(pos):
+                    board[7] = 'X'
+                elif square9.collidepoint(pos):
+                    board[8] = 'X'
+
+                player_turn = False
+
+                if check_winner(board):
+                    WIN.fill((0, 0, 0))
+                    text = font.render('Player won', 1, (255, 255, 255))
+                    WIN.blit(text, (10, 10))
+                    game_end = True
+
+
+        if not player_turn:
+            computer_move = computer_turn()
+            if computer_move != -1:
+                board[computer_move] = 'O'
+                player_turn = True
+                if check_winner(board):
+                    WIN.fill((0, 0, 0))
+                    text = font.render('Computer won', 1, (255, 255, 255))
+                    WIN.blit(text, (10, 10))
+                    game_end = True
+
+    #pygame.display.update()
+"""
