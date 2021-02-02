@@ -1,18 +1,37 @@
+import random
+
 board = [' ' for x in range(9)]
 
 def main():
     print('Game started')
 
+    print_board()
+
     game_end = False
 
     # run game until board is full
     while not game_end:
+        print('Player turn')
         player_turn()
         print_board()
-        print(check_winner())
+        if check_winner(board):
+            print('Player won')
+            game_end = True
+            break
+        
+        print('Computer turn')
+        computer_move = computer_turn()
+        if computer_move != -1:
+            board[computer_move] = 'O'
+            print_board()
+            if check_winner(board):
+                print('Computer won')
+                game_end = True
+                break
 
         # end game if no free spaces in board
         if board.count(' ') < 1:
+            print('Tie game')
             game_end = True
 
     print('Game ended')
@@ -24,7 +43,7 @@ def print_board():
     print('---------')
     print(board[6] + ' | ' + board[7] + ' | ' + board[8])
 
-def check_winner():
+def check_winner(board):
     # rows
     if ((board[0] == board[1] == board[2] != ' ') or
         (board[3] == board[4] == board[5] != ' ') or
@@ -66,6 +85,50 @@ def player_turn():
 def computer_turn():
     available_moves = [pos for pos, value in enumerate(board) if value == ' ']
     move = -1
+
+    # check if computer can win by placing an O and return that position (win)
+    for i in available_moves:
+        new_board = board[:]
+        new_board[i] = 'O'
+        if check_winner(new_board):
+            move = i
+            return move
+
+    # check if player will win next turn by placing an X and return that position (block player from winning next turn)
+    for i in available_moves:
+        new_board = board[:]
+        new_board[i] = 'X'
+        if check_winner(new_board):
+            move = i
+            return move
+
+    # return an available corner
+    avalable_corners = []
+    for i in available_moves:
+        if i in [0, 2, 6, 8]:
+            avalable_corners.append(i)
+    if len(avalable_corners) > 0:
+        random_index = random.randrange(0, len(avalable_corners))
+        move = avalable_corners[random_index]
+        return move
+    
+    # return center position if available
+    if 4 in available_moves:
+        move = 4
+        return move
+
+    # return an available edge
+    avalable_edges = []
+    for i in available_moves:
+        if i in [1, 3, 5, 7]:
+            avalable_edges.append(i)
+    if len(avalable_edges) > 0:
+        random_index = random.randrange(0, len(avalable_edges))
+        move = avalable_edges[random_index]
+        return move
+
+    # return initial move value
+    return move
 
 if __name__ == '__main__':
     main()
