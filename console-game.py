@@ -8,7 +8,8 @@ def main():
     # run game until board is full
     while not game_end:
         player_turn()
-        print_board(board)
+        print_board()
+        print(check_winner())
 
         # end game if no free spaces in board
         if board.count(' ') < 1:
@@ -16,19 +17,40 @@ def main():
 
     print('Game ended')
 
-def print_board(board):
+def print_board():
     print(board[0] + ' | ' + board[1] + ' | ' + board[2])
     print('---------')
     print(board[3] + ' | ' + board[4] + ' | ' + board[5])
     print('---------')
     print(board[6] + ' | ' + board[7] + ' | ' + board[8])
 
+def check_winner():
+    # rows
+    if ((board[0] == board[1] == board[2] != ' ') or
+        (board[3] == board[4] == board[5] != ' ') or
+        (board[6] == board[7] == board[8] != ' ')):
+        return True
+
+    # columns
+    if ((board[0] == board[3] == board[6] != ' ') or
+        (board[1] == board[4] == board[7] != ' ') or
+        (board[2] == board[5] == board[8] != ' ')):
+        return True
+
+    # diagonals
+    if ((board[0] == board[4] == board[8] != ' ') or
+        (board[2] == board[4] == board[6] != ' ')):
+        return True
+
+    return False
+
 def player_turn():
     made_move = False
 
     while not made_move:
+        player_input = input('Enter a position (1-9) ')
         try:
-            player_move = int(input('Enter a position (1-9) '))
+            player_move = int(player_input)
             if player_move < 1 or player_move > 9:
                 print('Enter a valid position')
             else:
@@ -40,6 +62,10 @@ def player_turn():
                     made_move = True
         except:
             print('Enter a valid number')
+
+def computer_turn():
+    available_moves = [pos for pos, value in enumerate(board) if value == ' ']
+    move = -1
 
 if __name__ == '__main__':
     main()
