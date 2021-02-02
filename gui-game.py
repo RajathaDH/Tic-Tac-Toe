@@ -4,32 +4,77 @@ import pygame
 board = [' ' for x in range(9)]
 
 WIDTH, HEIGHT = 340, 340
+WHITE = (255, 255, 255)
+FPS = 30
+
+#clock = pygame.time.Clock(FPS)
+
+pygame.init()
 
 WIN = pygame.display.set_mode((WIDTH, HEIGHT))
 
-square1 = pygame.draw.rect(WIN, (255, 255, 255), (10, 10, 100, 100))
-square2 = pygame.draw.rect(WIN, (255, 255, 255), (120, 10, 100, 100))
-square3 = pygame.draw.rect(WIN, (255, 255, 255), (230, 10, 100, 100))
-square4 = pygame.draw.rect(WIN, (255, 255, 255), (10, 120, 100, 100))
-square5 = pygame.draw.rect(WIN, (255, 255, 255), (120, 120, 100, 100))
-square6 = pygame.draw.rect(WIN, (255, 255, 255), (230, 120, 100, 100))
-square7 = pygame.draw.rect(WIN, (255, 255, 255), (10, 230, 100, 100))
-square8 = pygame.draw.rect(WIN, (255, 255, 255), (120, 230, 100, 100))
-square9 = pygame.draw.rect(WIN, (255, 255, 255), (230, 230, 100, 100))
+pygame.display.set_caption('Tic-Tac-Toe')
+font = pygame.font.SysFont('sans-serif', 100)
+
+square_size = (100, 100)
+square_positions = [
+    (10, 10),
+    (120, 10),
+    (230, 10),
+    (10, 120),
+    (120, 120),
+    (230, 120),
+    (10, 230),
+    (120, 230),
+    (230, 230)
+]
+
+square1 = pygame.draw.rect(WIN, WHITE, (square_positions[0][0], square_positions[0][1], square_size[0], square_size[1]))
+square2 = pygame.draw.rect(WIN, WHITE, (square_positions[1][0], square_positions[1][1], square_size[0], square_size[1]))
+square3 = pygame.draw.rect(WIN, WHITE, (square_positions[2][0], square_positions[2][1], square_size[0], square_size[1]))
+square4 = pygame.draw.rect(WIN, WHITE, (square_positions[3][0], square_positions[3][1], square_size[0], square_size[1]))
+square5 = pygame.draw.rect(WIN, WHITE, (square_positions[4][0], square_positions[4][1], square_size[0], square_size[1]))
+square6 = pygame.draw.rect(WIN, WHITE, (square_positions[5][0], square_positions[5][1], square_size[0], square_size[1]))
+square7 = pygame.draw.rect(WIN, WHITE, (square_positions[6][0], square_positions[6][1], square_size[0], square_size[1]))
+square8 = pygame.draw.rect(WIN, WHITE, (square_positions[7][0], square_positions[7][1], square_size[0], square_size[1]))
+square9 = pygame.draw.rect(WIN, WHITE, (square_positions[8][0], square_positions[8][1], square_size[0], square_size[1]))
+
+#text = font.render('X', 1, (0, 0, 0))
+#WIN.blit(text, (10, 10))
 
 def main():
+    clock = pygame.time.Clock()
+    #clock.tick()
+
     run = True
 
     while run:
-        pygame.time.delay(100)
+        clock.tick(FPS)
+
+        #pygame.time.delay(100)
 
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 run = False
 
-        pygame.display.update()
+            if event.type == pygame.MOUSEBUTTONUP:
+                pos = pygame.mouse.get_pos()
+                
+                if square1.collidepoint(pos):
+                    board[0] = 'X'
+
+        draw()
+
+        #pygame.display.update()
 
     pygame.quit()
+
+def draw():
+    #WIN.fill((0, 0, 0))
+    for position, letter in enumerate(board):
+        text = font.render(letter, 1, (0, 0, 0))
+        WIN.blit(text, (square_positions[position][0] + 25, square_positions[position][1] + 20))
+    pygame.display.update()
 
 """def check_winner(board):
     # rows
